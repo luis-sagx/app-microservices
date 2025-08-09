@@ -1,0 +1,9 @@
+<div class="flex flex-col min-h-screen md:flex-row">
+  <app-sidebar></app-sidebar>
+
+  <div 
+    class="flex-1 p-6 transition-all duration-300"
+    [ngClass]="{ 'md:ml-64': isDesktop() }">
+    <router-outlet></router-outlet>
+  </div>
+</div>

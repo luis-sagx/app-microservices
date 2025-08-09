@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # Base de datos MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: mystore-db-luis-prod
+    restart: always
+    environment:
+      MYSQL_DATABASE: mystore_luis2
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: luis
+      MYSQL_PASSWORD: admin123
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data_prod:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - mystore-network-luis2
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  categories-service:
+    image: luissagx/categories-service2:latest  
+    container_name: categories-service-prod
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=mystore_luis2
+      - DB_USER=root
+      - DB_PASSWORD=admin
+      - PORT=8082
+    ports:
+      - "8082:8082"
+    networks:
+      - mystore-network-luis2
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  products-service:
+    image: luissagx/products-service2:latest  
+    container_name: products-service-prod
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=mystore_luis2
+      - DB_USER=root
+      - DB_PASSWORD=admin
+      - PORT=8081
+    ports:
+      - "8081:8081"
+    networks:
+      - mystore-network-luis2
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  gateway:
+    image: luissagx/api-gateway2:latest  
+    container_name: api-gateway-prod
+    restart: always
+    environment:
+      - PORT=8080
+      - PRODUCTS_SERVICE_URL=http://products-service:8081
+      - CATEGORIES_SERVICE_URL=http://categories-service:8082
+    ports:
+      - "8080:8080"
+    networks:
+      - mystore-network-luis2
+    depends_on:
+      - products-service
+      - categories-service
+
+  # Data Initializer (ejecuta después de que los servicios estén listos)
+  data-init:
+    image: mysql:8.0
+    container_name: data-initializer
+    restart: "no"  # Solo se ejecuta una vez
+    volumes:
+      - ./init-data:/scripts
+    networks:
+      - mystore-network-luis2
+    depends_on:
+      - products-service
+      - categories-service
+    command: ["/bin/bash", "/scripts/setup-data.sh"]
+
+  frontend:
+    image: luissagx/frontend-angular2:latest 
+    container_name: frontend-angular-prod
+    restart: always
+    ports:
+      - "4200:80"
+    networks:
+      - mystore-network-luis2
+    depends_on:
+      - gateway
+
+volumes:
+  mysql_data_prod:
+
+networks:
+  mystore-network-luis2:
+    driver: bridge

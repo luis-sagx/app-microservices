@@ -1,0 +1,41 @@
+<button
+  class="fixed z-50 px-3 py-2 text-white bg-gray-900 rounded md:hidden top-4 left-4"
+  (click)="toggleSidebar()"
+  aria-label="Abrir menú"
+>
+  <i class="fa-solid fa-bars"></i>
+</button>
+
+<aside
+  class="fixed top-0 left-0 z-40 flex flex-col justify-between w-64 h-screen p-4 text-white transition-transform duration-300 bg-gray-900 md:translate-x-0"
+  [ngClass]="{
+    '-translate-x-full': !sidebarOpen,
+    'translate-x-0': sidebarOpen
+  }"
+  [class.hidden]="!sidebarOpen && !isDesktop()">
+  <div>
+    <h2 class="mt-12 mb-4 text-xl font-bold">SuperTiendaApp</h2>
+
+    <nav class="mt-10 space-y-2">
+      <a routerLink="/" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700">
+        <i class="fa-solid fa-house"></i>
+        <span>Inicio</span>
+      </a>
+      <a routerLink="/categories" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700">
+        <i class="fa-solid fa-tags"></i>
+        <span>Categorías</span>
+      </a>
+      <a routerLink="/products" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700">
+        <i class="fa-solid fa-box"></i>
+        <span>Productos</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="px-4 pt-4 border-t border-gray-700">
+    <h4 class="flex items-center gap-3">
+      <i class="fa-solid fa-user"></i>
+      <span>Administrador</span>
+    </h4>
+  </div>
+</aside>
