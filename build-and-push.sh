@@ -1,9 +1,10 @@
 #!/bin/bash
 
 DOCKER_USERNAME="luissagx" 
-VERSION="1.0"
+VERSION="v3"  # Incrementado para cambios de AWS
 
 echo "🐳 Construyendo y subiendo imágenes a Docker Hub..."
+echo "🌍 Versión v3 - Configurado para AWS con IP: 18.117.19.207"
 echo ""
 
 # Función para build y push

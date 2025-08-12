@@ -12,7 +12,7 @@ services:
       MYSQL_USER: luis
       MYSQL_PASSWORD: admin123
     ports:
-      - "3309:3306"
+      - "3309:3306"  # Puerto externo para acceso directo si es necesario
     volumes:
       - mysql_data_prod:/var/lib/mysql
     networks:
@@ -23,8 +23,9 @@ services:
       timeout: 5s
       retries: 5
 
+  # Servicio de categorías - Microservicio
   categories-service:
-    image: luissagx/categories-service2:v2  
+    image: luissagx/categories-service2:v3  
     container_name: categories-service-prod
     restart: always
     environment:
@@ -35,15 +36,16 @@ services:
       - DB_PASSWORD=admin123
       - PORT=8082
     ports:
-      - "8082:8082"
+      - "8082:8082"  # Puerto interno para comunicación entre servicios
     networks:
       - mystore-network-luis3
     depends_on:
       mysql:
         condition: service_healthy
 
+  # Servicio de productos - Microservicio
   products-service:
-    image: luissagx/products-service2:v2  
+    image: luissagx/products-service2:v3  
     container_name: products-service-prod
     restart: always
     environment:
@@ -54,15 +56,16 @@ services:
       - DB_PASSWORD=admin123
       - PORT=8081
     ports:
-      - "8081:8081"
+      - "8081:8081"  # Puerto interno para comunicación entre servicios
     networks:
       - mystore-network-luis3
     depends_on:
       mysql:
         condition: service_healthy
 
+  # API Gateway - Punto de entrada principal para AWS (Puerto 8080)
   gateway:
-    image: luissagx/api-gateway2:v2
+    image: luissagx/api-gateway2:v3
     container_name: api-gateway-prod
     restart: always
     environment:
@@ -70,7 +73,7 @@ services:
       - PRODUCTS_SERVICE_URL=http://products-service:8081
       - CATEGORIES_SERVICE_URL=http://categories-service:8082
     ports:
-      - "8080:8080"
+      - "8080:8080"  # Puerto principal para AWS - accesible desde 18.117.19.207:8080
     networks:
       - mystore-network-luis3
     depends_on:
@@ -79,12 +82,13 @@ services:
       categories-service:
         condition: service_started
 
+  # Frontend Angular - Accesible desde puerto 4200 (mapeado a 80 internamente)
   frontend:
-    image: luissagx/frontend-angular2:v2
+    image: luissagx/frontend-angular2:v3
     container_name: frontend-angular-prod
     restart: always
     ports:
-      - "4200:80"
+      - "4200:80"  # Accesible desde 18.117.19.207:4200
     networks:
       - mystore-network-luis3
     depends_on:

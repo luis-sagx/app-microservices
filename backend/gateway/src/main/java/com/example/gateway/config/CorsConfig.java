@@ -15,14 +15,14 @@ public class CorsConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         
-        // Permitir solo el origen específico del frontend
-        corsConfig.addAllowedOrigin("http://localhost:4200");
+        // Permitir cualquier origen para despliegue en AWS
+        corsConfig.addAllowedOriginPattern("*");
+        corsConfig.setAllowCredentials(false); // Debe ser false cuando se usa * como origen
         
         // Configuraciones específicas
         corsConfig.setMaxAge(3600L);
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfig.setAllowedHeaders(Arrays.asList("*"));
-        corsConfig.setAllowCredentials(true);
         
         // Exponer headers si es necesario
         corsConfig.addExposedHeader("Content-Type");
