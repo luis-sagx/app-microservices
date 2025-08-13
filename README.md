@@ -1,4 +1,4 @@
-# 🏪 Luis Store - Microservices Architecture
+# Super Tienda - App con microservicios
 
 ## 🌐 Acceso Público - Desplegado en AWS
 
@@ -41,16 +41,13 @@ deber_despliege/
 │       ├── package.json
 │       └── src/
 ├── docker-compose.yml       # Orquestación de servicios
-├── deploy.sh               # Script de despliegue
 ├── build-and-push.sh       # Build y push a Docker Hub
-├── test-apis.sh            # Testing automático
-├── AWS-DEPLOYMENT.md       # Documentación AWS
 └── README.md              # Esta documentación
 ```is-sagx/app-microservices
 
 ## �📋 Descripción del Proyecto
 
-Luis Store es una aplicación completa de e-commerce desarrollada con arquitectura de microservicios, desplegada en **AWS EC2** usando **Docker Compose**. El sistema incluye:
+SuperTienda es una aplicación completa de e-commerce desarrollada con arquitectura de microservicios, desplegada en **AWS EC2** usando **Docker Compose**. El sistema incluye:
 
 - **Microservicio Categories**: Gestión de categorías de productos
 - **Microservicio Products**: Gestión de productos (con relación a categorías)
@@ -98,12 +95,19 @@ Este script:
 
 #### **ETAPA 2: Deploy en AWS EC2**
 
-#### 1. **Conectar al servidor AWS:**
+#### 1. **Crear una cuenta en AWS:**
+
+- Registrarse en AWS Free Tier.
+- Crear una instancia EC2 (Ubuntu 24.04 recomendado).
+- Descargar la llave .pem durante la creación.
+
+
+#### 2. **Conectar al servidor AWS:**
 ```bash
 ssh -i tu_llave.pem ubuntu@18.117.19.207
 ```
 
-#### 2. **Instalar Docker y Docker Compose (si no están instalados):**
+#### 3. **Instalar Docker y Docker Compose (si no están instalados):**
 ```bash
 # Actualizar el sistema
 sudo apt update && sudo apt upgrade -y
@@ -129,7 +133,7 @@ docker --version
 docker-compose --version
 ```
 
-#### 3. **Descargar solo el docker-compose.yml:**
+#### 4. **Descargar solo el docker-compose.yml:**
 ```bash
 # Descargar el archivo docker-compose.yml directamente
 wget https://raw.githubusercontent.com/luis-sagx/app-microservices/main/docker-compose.yml
@@ -138,7 +142,7 @@ wget https://raw.githubusercontent.com/luis-sagx/app-microservices/main/docker-c
 cat docker-compose.yml
 ```
 
-#### 4. **Configurar Security Group (AWS Console):**
+#### 5. **Configurar Security Group (AWS Console):**
 Abrir los siguientes puertos en el Security Group:
 - **22** - SSH
 - **4200** - Frontend Angular
@@ -147,7 +151,7 @@ Abrir los siguientes puertos en el Security Group:
 - **8082** - Categories Service
 - **3309** - MySQL 
 
-#### 5. **Ejecutar el despliegue:**
+#### 6. **Ejecutar el despliegue:**
 ```bash
 # Descargar las imágenes y ejecutar los contenedores
 docker-compose up -d
@@ -159,7 +163,7 @@ docker-compose ps
 docker-compose logs -f
 ```
 
-#### 6. **Verificar el despliegue:**
+#### 7. **Verificar el despliegue:**
 
 ```bash
 # Verificar estado de contenedores
@@ -447,5 +451,5 @@ sudo systemctl restart docker
 
 **Luis Sagnay** 
 *Materia: Web Avanzado - ESPE*  
-*Tarea: Despliegue de Microservicios en AWS EC2*
+*Tarea: Despliegue de Microservicios*
 
